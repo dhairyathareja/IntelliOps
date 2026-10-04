@@ -1,35 +1,45 @@
 import mongoose, { Schema } from "mongoose";
 
-const telemetrySchema = new Schema({
-    agentId:{
-        type: String,
-        required: true
-    },
-    metrics:{
-        cpu:{
-            type: String
+const telemetrySchema = new Schema(
+    {
+        agentId: {
+            type: String,
+            required: true,
+            index: true
         },
-        memory:{
-            type: String
+
+        timestamp: {
+            type: Date,
+            required: true
         },
-        disk:{
-            type: String
-        },
-        networkRx:{
-            type: String
-        },
-        networkTx:{
-            type: String
+
+        metrics: {
+            cpu: {
+                type: Number
+            },
+
+            memory: {
+                type: Number
+            },
+
+            disk: {
+                type: Number
+            },
+
+            networkRx: {
+                type: Number
+            },
+
+            networkTx: {
+                type: Number
+            }
         }
     },
-    createdAt:{
-        type: Date,
-        default: Date.now()
-    },
-    timestamps:{
-        type: Date
+    {
+        timestamps: true
     }
-})
+);
 
-const Telemetry = mongoose.model("Agent",telemetrySchema);
+const Telemetry = mongoose.model("Telemetry", telemetrySchema);
+
 export default Telemetry;

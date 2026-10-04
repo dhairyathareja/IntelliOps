@@ -9,6 +9,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Import Route
+import agentRoutes from "./routes/agent.route.js";
+import telemetryRoutes from "./routes/telemetry.routes.js";
 
 const app = express();
 
@@ -25,6 +27,8 @@ app.use(bodyParser.urlencoded({ extended: true, limit: "4kb" }));
 app.use(cookieParser());
 
 // Routing APIs
+app.use("/agents", agentRoutes);
+app.use("/telemetry", telemetryRoutes);
 
 const PORT = process.env.PORT || 4444;
 mongoose
