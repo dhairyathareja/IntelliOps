@@ -5,12 +5,7 @@ import crypto from "crypto";
 
 export const postRegisterAgent = ErrorWrapper(async(req,res,next)=>{
 
-    const {
-        hostname,
-        ipAddress,
-        operatingSystem,
-        agentVersion
-    } = req.body;
+    const {hostname, ipAddress, operatingSystem, agentVersion} = req.body;
 
     if(!hostname){
         throw new ErrorHandler(400,`Please Provide Hostname`);
@@ -33,10 +28,7 @@ export const postRegisterAgent = ErrorWrapper(async(req,res,next)=>{
     });
 
     if(existingAgent){
-        throw new ErrorHandler(
-            400,
-            `Agent with this hostname is already registered`
-        );
+        throw new ErrorHandler(400, `Agent with this hostname is already registered`);
     }
 
     const agentId = `agt_${crypto.randomBytes(6).toString("hex")}`;
@@ -102,6 +94,37 @@ export const getAgentList = ErrorWrapper(async(req,res,next)=>{
             message:`Agents Fetched Successfully`,
             data:{
                 agents:agents
+            }
+        });
+});
+
+
+export const getAgentDetails = ErrorWrapper(async(req,res,next)=>{
+
+    const { agentId } = req.params;
+
+    if(!agentId){
+        throw new ErrorHandler(400,`Please Provide Agent ID`);
+    }
+
+    const agent = await Agent.findOne({
+        agentId: agentId
+    })
+    .select("-apiKey");
+
+    if(!agent){
+        throw new ErrorHandler(
+            404,
+            `Agent Not Found`
+        );
+    }
+
+    res.status(200)
+        .json({
+            success:true,
+            message:`Agent Details Fetched Successfully`,
+            data:{
+                agent:agent
             }
         });
 });
