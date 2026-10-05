@@ -11,6 +11,7 @@ dotenv.config();
 // Import Route
 import agentRoutes from "./routes/agent.route.js";
 import telemetryRoutes from "./routes/telemetry.routes.js";
+import incidentRoutes from "./routes/incident.routes.js";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(cookieParser());
 // Routing APIs
 app.use("/agents", agentRoutes);
 app.use("/telemetry", telemetryRoutes);
+app.use("/incidents", incidentRoutes);
 
 const PORT = process.env.PORT || 4444;
 mongoose

@@ -2,6 +2,7 @@ import Telemetry from "../model/telemetry.model.js";
 import ErrorWrapper from "../utils/ErrorWrapper.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import { detectTelemetryEvents } from "../services/eventDetection.service.js";
+import { correlateEvents } from "../services/eventCorrelation.service.js";
 
 export const postTelemetry = ErrorWrapper(async(req,res,next)=>{
 
@@ -79,6 +80,25 @@ export const postTelemetry = ErrorWrapper(async(req,res,next)=>{
     );
 
 
+    const incidents = [];
+
+
+    for(const event of events){
+
+        if(event.status === "active"){
+
+            const incident = await correlateEvents(
+                req.agent.agentId,
+                event
+            );
+
+            if(incident){
+                incidents.push(incident);
+            }
+        }
+    }
+
+
     res.status(201)
         .json({
             success:true,
@@ -86,7 +106,8 @@ export const postTelemetry = ErrorWrapper(async(req,res,next)=>{
             data:{
                 agentId:telemetry.agentId,
                 timestamp:telemetry.timestamp,
-                events:events
+                events:events,
+                incidents:incidents
             }
         });
 });
